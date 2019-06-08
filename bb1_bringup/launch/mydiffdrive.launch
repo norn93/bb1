@@ -1,0 +1,35 @@
+<launch>
+  <arg name="model" default="$(find bb1_description)/urdf/bb1.urdf"/>
+  <arg name="rvizconfig" default="$(find bb1_bringup)/config/urdf.rviz" />
+
+  <include file="$(find bb1_bringup)/launch/gazebo.launch">
+    <arg name="model" value="$(arg model)" />
+  </include>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" />
+
+  <rosparam command="load"
+            file="$(find bb1_bringup)/config/joints.yaml"
+            ns="bb1_joint_state_controller" />
+  <rosparam command="load"
+            file="$(find bb1_bringup)/config/mydiffdrive.yaml"
+            ns="bb1_diff_drive_controller" />
+
+  <node name="bb1_controller_spawner" pkg="controller_manager" type="spawner"
+    args="bb1_joint_state_controller
+          bb1_diff_drive_controller"/>
+
+  <!-- <node name="rqt_robot_steering" pkg="rqt_robot_steering" type="rqt_robot_steering">
+    <param name="default_topic" value="/my_diff_drive_controller/cmd_vel"/>
+  </node> -->
+
+ <!-- bb1 nodelet manager -->
+  <node pkg="nodelet" type="nodelet" name="bb1_nodelet_manager" args="manager"/>
+
+  <!-- velocity commands multiplexer -->
+  <node pkg="nodelet" type="nodelet" name="cmd_vel_mux" args="load yocs_cmd_vel_mux/CmdVelMuxNodelet bb1_nodelet_manager">
+    <param name="yaml_cfg_file" value="$(find bb1_bringup)/config/mux.yaml"/>
+    <remap from="cmd_vel_mux/output" to="/bb1_diff_drive_controller/cmd_vel"/>
+  </node>
+
+</launch>
