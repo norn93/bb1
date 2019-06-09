@@ -1,16 +1,12 @@
 <!-- -*- mode: XML -*- -->
 <launch>
   <arg name="node_name" default="bb1_robot" />
+  
   <!-- Use udev rules to setup aliases for right/left wheel port. -->
-  <!--
-  <arg name="right_wheel_port" default="/dev/right_wheel_esc" />
-  <arg name="left_wheel_port" default="/dev/left_wheel_esc" />
-  -->
-   
-  <arg name="front_right_wheel_port" default="/dev/ttyACM0" />
-  <arg name="back_right_wheel_port" default="/dev/ttyACM1" />
-  <arg name="front_left_wheel_port" default="/dev/ttyACM2" />
-  <arg name="back_left_wheel_port" default="/dev/ttyACM3" />
+  <arg name="front_right_wheel_port" default="/dev/esc_front_right" />
+  <arg name="back_right_wheel_port" default="/dev/esc_back_right" />
+  <arg name="front_left_wheel_port" default="/dev/esc_front_left" />
+  <arg name="back_left_wheel_port" default="/dev/esc_back_left" />
   
   <!-- Parameter for enabling rotor position publishing
        Possible values are "inductance", "observer", "encoder", "pid_pos", "pid_pos_error", "encoder_observer_error" -->
