@@ -50,7 +50,7 @@
 			<inertia ixx="0.006" ixy="0" ixz="0" iyy="0.006" iyz="0" izz="0.011"/>
 		</inertial>
 	</link>
-	<joint name="base_to_right_front_wheel_joint" type="continuous">
+	<joint name="front_right_wheel_joint" type="continuous">
 		<parent link="base_link"/>
 		<child link="right_front_wheel"/>
 		<origin xyz="0.09 -0.12 -0.025"/>
@@ -76,7 +76,7 @@
 			<inertia ixx="0.006" ixy="0" ixz="0" iyy="0.006" iyz="0" izz="0.011"/>
 		</inertial>
 	</link>
-	<joint name="base_to_right_back_wheel_joint" type="continuous">
+	<joint name="back_right_wheel_joint" type="continuous">
 		<parent link="base_link"/>
 		<child link="right_back_wheel"/>
 		<origin xyz="-0.09 -0.12 -0.025"/>
@@ -102,7 +102,7 @@
 			<inertia ixx="0.006" ixy="0" ixz="0" iyy="0.006" iyz="0" izz="0.011"/>
 		</inertial>
 	</link>
-	<joint name="base_to_left_front_wheel_joint" type="continuous">
+	<joint name="front_left_wheel_joint" type="continuous">
 		<parent link="base_link"/>
 		<child link="left_front_wheel"/>
 		<origin xyz="0.09 0.12 -0.025"/>
@@ -128,7 +128,7 @@
 			<inertia ixx="0.006" ixy="0" ixz="0" iyy="0.006" iyz="0" izz="0.011"/>
 		</inertial>
 	</link>
-	<joint name="base_to_left_back_wheel_joint" type="continuous">
+	<joint name="back_left_wheel_joint" type="continuous">
 		<parent link="base_link"/>
 		<child link="left_back_wheel"/>
 		<origin xyz="-0.09 0.12 -0.025"/>
@@ -177,7 +177,7 @@ simulation and visualization of the robot -->
   <actuator name="base_to_right_front_wheel_motor">
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
-  <joint name="base_to_right_front_wheel_joint">
+  <joint name="front_right_wheel_joint">
     <hardwareInterface>VelocityJointInterface</hardwareInterface>
   </joint>
 </transmission>
@@ -187,7 +187,7 @@ simulation and visualization of the robot -->
   <actuator name="base_to_right_back_wheel_motor">
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
-  <joint name="base_to_right_back_wheel_joint">
+  <joint name="back_right_wheel_joint">
     <hardwareInterface>VelocityJointInterface</hardwareInterface>
   </joint>
 </transmission>
@@ -197,7 +197,7 @@ simulation and visualization of the robot -->
   <actuator name="base_to_left_front_wheel_motor">
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
-  <joint name="base_to_left_front_wheel_joint">
+  <joint name="front_left_wheel_joint">
     <hardwareInterface>VelocityJointInterface</hardwareInterface>
   </joint>
 </transmission>
@@ -207,7 +207,7 @@ simulation and visualization of the robot -->
   <actuator name="base_to_left_back_wheel_motor">
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
-  <joint name="base_to_left_back_wheel_joint">
+  <joint name="back_left_wheel_joint">
     <hardwareInterface>VelocityJointInterface</hardwareInterface>
   </joint>
 </transmission>
