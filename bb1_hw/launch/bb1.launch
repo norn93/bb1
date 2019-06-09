@@ -1,16 +1,12 @@
 <!-- -*- mode: XML -*- -->
 <launch>
   <arg name="node_name" default="bb1_robot" />
+
   <!-- Use udev rules to setup aliases for right/left wheel port. -->
-  <!--
-  <arg name="right_wheel_port" default="/dev/right_wheel_esc" />
-  <arg name="left_wheel_port" default="/dev/left_wheel_esc" />
-  -->
-   
-  <arg name="front_right_wheel_port" default="/dev/ttyACM0" />
-  <arg name="back_right_wheel_port" default="/dev/ttyACM1" />
-  <arg name="front_left_wheel_port" default="/dev/ttyACM2" />
-  <arg name="back_left_wheel_port" default="/dev/ttyACM3" />
+  <arg name="front_right_wheel_port" default="/dev/esc_front_right" />
+  <arg name="back_right_wheel_port" default="/dev/esc_back_right" />
+  <arg name="front_left_wheel_port" default="/dev/esc_front_left" />
+  <arg name="back_left_wheel_port" default="/dev/esc_back_left" />
   
   <!-- Parameter for enabling rotor position publishing
        Possible values are "inductance", "observer", "encoder", "pid_pos", "pid_pos_error", "encoder_observer_error" -->
@@ -30,10 +26,10 @@
       <param name="back_right_wheel_port" value="$(arg back_right_wheel_port)" />
       <param name="front_left_wheel_port" value="$(arg front_left_wheel_port)" />
       <param name="back_left_wheel_port" value="$(arg back_left_wheel_port)" />
-      <param name="front_right_wheel_ikv" value="8.82" />
-      <param name="back_right_wheel_ikv" value="8.82" />
-      <param name="front_left_wheel_ikv" value="8.82" />
-      <param name="back_left_wheel_ikv" value="8.82" />
+      <param name="front_right_wheel_ikv" value="8.1" />
+      <param name="back_right_wheel_ikv" value="8.1" />
+      <param name="front_left_wheel_ikv" value="8.1" />
+      <param name="back_left_wheel_ikv" value="8.1" />
       <param name="tacho_pulses_per_revolution" value="90" />
       <param name="motor_poles" value="15" />
       <param name="rotor_position_source" value="$(arg rotor_position_source)" />
