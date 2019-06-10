@@ -36,7 +36,7 @@ linear:
   x:
     has_velocity_limits    : true
     #max_velocity           : 1.0     # m/s
-    max_velocity           : 1.0    # m/s
+    max_velocity           : 0.1    # m/s
     has_acceleration_limits: true
     #max_acceleration       : 0.6   # m/s^2
     max_acceleration       : 35.0   # m/s^2 (for some reason, multiply the one you want by around 35)
