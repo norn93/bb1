@@ -6,6 +6,8 @@
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/robot_hw.h>
 
+#include <control_toolbox/pid.h>
+
 namespace bb1
 {
 
@@ -40,6 +42,8 @@ private:
   double _pos[4];
   double _vel[4];
   double _eff[4];
+
+  //control_toolbox::Pid test_pid_controller;
 };
 
 }

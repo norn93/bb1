@@ -5,6 +5,8 @@
 #include <hardware_interface/robot_hw.h>
 #include <math.h>
 
+#include <control_toolbox/pid.h>
+
 namespace bb1 {
 
 BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_port, 
@@ -78,26 +80,33 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
   {
     ROS_DEBUG("Reading from hardware...");
 
-    _pos[0] = _front_left_wheel_driver.getDisplacement()*_tacho_conversion_factor;
+    _pos[0] = _front_left_wheel_driver.getDisplacement()/90*(2*3.14);//*_tacho_conversion_factor;
     _pos[1] = _back_left_wheel_driver.getDisplacement()*_tacho_conversion_factor;
     _pos[2] = -_front_right_wheel_driver.getDisplacement()*_tacho_conversion_factor;
     _pos[3] = -_back_right_wheel_driver.getDisplacement()*_tacho_conversion_factor;
-    _vel[0] = _front_left_wheel_driver.getSpeed()/_rad_per_sec_to_erpm_conversion_factor;
+    _vel[0] = _front_left_wheel_driver.getSpeed();///_rad_per_sec_to_erpm_conversion_factor;
     _vel[1] = _back_left_wheel_driver.getSpeed()/_rad_per_sec_to_erpm_conversion_factor;
     _vel[2] = -_front_right_wheel_driver.getSpeed()/_rad_per_sec_to_erpm_conversion_factor;
     _vel[3] = -_back_right_wheel_driver.getSpeed()/_rad_per_sec_to_erpm_conversion_factor;
+
+    _eff[0] = _front_left_wheel_driver.getDutyCycleIn();
+    _eff[1] = _back_left_wheel_driver.getDutyCycleIn();
+    _eff[2] = -_front_right_wheel_driver.getDutyCycleIn();
+    _eff[3] = -_back_right_wheel_driver.getDutyCycleIn();
 
     double encoderDisplacementFrontLeft = _front_left_wheel_driver.getEncoderDisplacement();
     double encoderDisplacementBackLeft = _back_left_wheel_driver.getEncoderDisplacement();
     double encoderDisplacementFrontRight = _front_right_wheel_driver.getEncoderDisplacement();
     double encoderDisplacementBackRight = _back_right_wheel_driver.getEncoderDisplacement();
 
-    ROS_DEBUG("Position: %f : %f", _pos[0], _pos[1], _pos[2], _pos[3]);
-    ROS_DEBUG("Encoder position: %f : %f", encoderDisplacementFrontLeft, encoderDisplacementBackLeft, 
+    ROS_DEBUG("Vars: %f : %f", _rad_per_sec_to_erpm_conversion_factor, _tacho_conversion_factor);
+
+    ROS_DEBUG("Position: %f : %f : %f : %f", _pos[0], _pos[1], _pos[2], _pos[3]);
+    ROS_DEBUG("Encoder position: %f : %f : %f : %f", encoderDisplacementFrontLeft, encoderDisplacementBackLeft, 
       encoderDisplacementFrontRight, encoderDisplacementBackRight);
-    ROS_DEBUG("Velocity: %f : %f", _vel[0], _vel[1], _vel[2], _vel[3]);
-    ROS_DEBUG("Commands: %f : %f", _cmd[0], _cmd[1], _cmd[2], _cmd[3]);
-    ROS_DEBUG("Effort: %f : %f", _eff[0], _eff[1], _eff[2], _eff[3]);
+    ROS_DEBUG("Velocity: %f : %f : %f : %f", _vel[0], _vel[1], _vel[2], _vel[3]);
+    ROS_DEBUG("Commands: %f : %f : %f : %f", _cmd[0], _cmd[1], _cmd[2], _cmd[3]);
+    ROS_DEBUG("Effort: %f : %f : %f : %f", _eff[0], _eff[1], _eff[2], _eff[3]);
   }
 
   void BB1_HW::write(const ros::Time& time, const ros::Duration& period)

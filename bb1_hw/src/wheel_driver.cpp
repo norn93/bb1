@@ -99,6 +99,7 @@ void wheel_driver::vescPacketCallback(const boost::shared_ptr<VescPacket const>&
       displacement = values->tachometer();
       speed = values->rpm();
       voltageIn = values->v_in();
+      dutyCycleIn = values->duty_now();
     }
 
     vesc_msgs::VescStateStamped::Ptr state_msg(new vesc_msgs::VescStateStamped);
@@ -186,6 +187,14 @@ double  wheel_driver::getVoltageIn()
   {
     boost::mutex::scoped_lock lock(mutex_);
     return voltageIn;
+  }
+}
+
+double  wheel_driver::getDutyCycleIn()
+{
+  {
+    boost::mutex::scoped_lock lock(mutex_);
+    return dutyCycleIn;
   }
 }
 

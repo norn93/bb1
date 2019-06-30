@@ -21,6 +21,9 @@ public:
     double getVoltageIn();
     double getDisplacement();
     double getEncoderDisplacement();
+
+    double getDutyCycleIn();
+
     void setDutyCycle(double dutyCycle);
     void releaseMotor();
 
@@ -36,6 +39,9 @@ private:
     boost::mutex mutex_;
     double speed;
     double voltageIn;
+
+    double dutyCycleIn;
+
     double displacement;
     double encoderDisplacement;
     double encoderDisplacementPreviousValue;
