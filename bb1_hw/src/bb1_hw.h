@@ -43,7 +43,9 @@ private:
   double _vel[4];
   double _eff[4];
 
-  //control_toolbox::Pid test_pid_controller;
+  control_toolbox::Pid test_pid_controller;
+  //ros::Time time;
+  ros::Time last_time;
 };
 
 }

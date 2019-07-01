@@ -5,7 +5,7 @@
 #include <hardware_interface/robot_hw.h>
 #include <math.h>
 
-#include <control_toolbox/pid.h>
+//#include <control_toolbox/pid.h>
 
 namespace bb1 {
 
@@ -74,6 +74,12 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     _jnt_vel_interface.registerHandle(pos_handle_d);
 
     registerInterface(&_jnt_vel_interface);
+
+    control_toolbox::Pid test_pid_controller;
+    //p, i, d, i_max, i_min (the max and min reduce integral windup)
+    test_pid_controller.initPid(0, 0, 0, 0.3, -0.3);
+    //set up the time
+    ros::Time last_time = ros::Time::now();
     }
 
   void BB1_HW::read(const ros::Time& time, const ros::Duration& period)
@@ -112,6 +118,20 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
   void BB1_HW::write(const ros::Time& time, const ros::Duration& period)
   {
     ROS_DEBUG("Writing to hardware...");
+
+    ROS_INFO("Entering PID control...");
+
+    ROS_INFO("Current speed: %f, desired speed: %f, error: %f", _vel[0], _cmd[0], _cmd[0] - _vel[0]);
+    //ROS_INFO("Time since update: %f", ros::Time::now() - last_time);
+
+    double effort = test_pid_controller.computeCommand(_cmd[0] - _vel[0], ros::Time::now() - last_time);
+    ros::Time last_time = ros::Time::now();
+
+    ROS_INFO("Output: %f", effort);
+
+    //TODO: _front_left_wheel_driver.setDutyCycle(effort);
+
+    ROS_INFO("Exiting PID control.");
     
     double front_left_voltage_in = _front_left_wheel_driver.getVoltageIn();
     double front_left_request_dutyCycle = 0.0;
