@@ -77,7 +77,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
 
     control_toolbox::Pid test_pid_controller;
     //p, i, d, i_max, i_min (the max and min reduce integral windup)
-    test_pid_controller.initPid(0, 0, 0, 0.3, -0.3);
+    test_pid_controller.initPid(1, 0, 0, 0.3, -0.3);
     //set up the time
     ros::Time last_time = ros::Time::now();
     }
@@ -90,7 +90,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     _pos[1] = _back_left_wheel_driver.getDisplacement()*_tacho_conversion_factor;
     _pos[2] = -_front_right_wheel_driver.getDisplacement()*_tacho_conversion_factor;
     _pos[3] = -_back_right_wheel_driver.getDisplacement()*_tacho_conversion_factor;
-    _vel[0] = _front_left_wheel_driver.getSpeed();///_rad_per_sec_to_erpm_conversion_factor;
+    _vel[0] = _front_left_wheel_driver.getSpeed()/_rad_per_sec_to_erpm_conversion_factor;
     _vel[1] = _back_left_wheel_driver.getSpeed()/_rad_per_sec_to_erpm_conversion_factor;
     _vel[2] = -_front_right_wheel_driver.getSpeed()/_rad_per_sec_to_erpm_conversion_factor;
     _vel[3] = -_back_right_wheel_driver.getSpeed()/_rad_per_sec_to_erpm_conversion_factor;
@@ -121,13 +121,16 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
 
     ROS_INFO("Entering PID control...");
 
+    //ROS_INFO("Last time %d", last_time);
+
     ROS_INFO("Current speed: %f, desired speed: %f, error: %f", _vel[0], _cmd[0], _cmd[0] - _vel[0]);
-    //ROS_INFO("Time since update: %f", ros::Time::now() - last_time);
+    ROS_INFO("Time: %d, Last: %d, Since update: %d", ros::Time::now().nsec, last_time.nsec, ros::Time::now().nsec - last_time.nsec);
 
     double effort = test_pid_controller.computeCommand(_cmd[0] - _vel[0], ros::Time::now() - last_time);
-    ros::Time last_time = ros::Time::now();
+    //double effort = test_pid_controller.computeCommand(_cmd[0] - _vel[0], ros::Duration(0.001));
+    last_time = ros::Time::now();
 
-    ROS_INFO("Output: %f", effort);
+    ROS_INFO("Output: %F", effort);
 
     //TODO: _front_left_wheel_driver.setDutyCycle(effort);
 
