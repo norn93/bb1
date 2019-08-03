@@ -77,7 +77,9 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
 
     control_toolbox::Pid test_pid_controller;
     //p, i, d, i_max, i_min (the max and min reduce integral windup)
-    test_pid_controller.initPid(1, 0, 0, 0.3, -0.3);
+    test_pid_controller.initPid(1, 1, 1, 0.3, -0.3);
+    //reset
+    //test_pid_controller.reset();
     //set up the time
     ros::Time last_time = ros::Time::now();
     }
@@ -121,18 +123,46 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
 
     ROS_INFO("Entering PID control...");
 
+    test_pid_controller.setGains(1, 0, 0, 0.3, -0.3);
+
     //ROS_INFO("Last time %d", last_time);
 
     ROS_INFO("Current speed: %f, desired speed: %f, error: %f", _vel[0], _cmd[0], _cmd[0] - _vel[0]);
-    ROS_INFO("Time: %d, Last: %d, Since update: %d", ros::Time::now().nsec, last_time.nsec, ros::Time::now().nsec - last_time.nsec);
+    //ROS_INFO("Time: %d, Last: %d, Since update: %d", ros::Time::now().nsec, last_time.nsec, ros::Time::now().nsec - last_time.nsec);
+
+    //ros::Duration dt = t_now - pid_last_time_;
 
     double effort = test_pid_controller.computeCommand(_cmd[0] - _vel[0], ros::Time::now() - last_time);
-    //double effort = test_pid_controller.computeCommand(_cmd[0] - _vel[0], ros::Duration(0.001));
+    //double effort = test_pid_controller.computeCommand(_cmd[0] - _vel[0], ros::Duration(0.10));
     last_time = ros::Time::now();
 
-    ROS_INFO("Output: %F", effort);
+    ROS_INFO("Output: %f", effort/10);
+
+    //const double command = test_pid_controller.getCurrentCmd();
+
+    //ROS_INFO("Current: %f", command);
 
     //TODO: _front_left_wheel_driver.setDutyCycle(effort);
+
+    _front_left_wheel_driver.setDutyCycle(effort/10);
+
+    double a = 0;
+    double b = 0;
+    double c = 0;
+
+    test_pid_controller.getCurrentPIDErrors(&a, &b, &c);
+
+    ROS_INFO("%f %f %f", a, b, c);
+
+    double p = 0;
+    double i = 0;
+    double d = 0;
+    double i_max = 0;
+    double i_min = 0;
+
+    test_pid_controller.getGains(p, i, d, i_max, i_min);
+
+    ROS_INFO("%f %f %f %f %f", p, i, d, i_max, i_min);
 
     ROS_INFO("Exiting PID control.");
     
@@ -145,7 +175,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
       ROS_DEBUG("Requested ERPM front left: %f", requestedERPM);
       front_left_request_dutyCycle = requestedERPM / (front_left_voltage_in * _front_left_wheel_ikv * _motor_poles * 2);
       ROS_DEBUG("Front left request dutycycle : %f", front_left_request_dutyCycle);
-       _front_left_wheel_driver.setDutyCycle(front_left_request_dutyCycle);
+       //_front_left_wheel_driver.setDutyCycle(front_left_request_dutyCycle);
     }
     else
     {
