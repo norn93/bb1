@@ -123,7 +123,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
 
     ROS_INFO("Entering PID control...");
 
-    test_pid_controller.setGains(1, 0, 0, 0.3, -0.3);
+    test_pid_controller.setGains(2.5, 0.1, 0.03, 1000, -1000);
 
     //ROS_INFO("Last time %d", last_time);
 
@@ -136,7 +136,22 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     //double effort = test_pid_controller.computeCommand(_cmd[0] - _vel[0], ros::Duration(0.10));
     last_time = ros::Time::now();
 
-    ROS_INFO("Output: %f", effort/10);
+    ROS_INFO("Output: %f", effort);
+
+    double front_left_voltage_in = _front_left_wheel_driver.getVoltageIn();
+    effort = effort/front_left_voltage_in;
+
+    ROS_INFO("Adjusted output: %f", effort);
+
+    if (effort > 0.95) {
+      effort = 0.95;
+    } else if (effort < -0.95) {
+      effort = -0.95;
+    } else if (effort < 0.01 && effort >= 0 || effort > -0.01 && effort <= 0) {
+      effort = 0;
+    }
+
+    ROS_INFO("Clamped output: %f", effort);
 
     //const double command = test_pid_controller.getCurrentCmd();
 
@@ -144,7 +159,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
 
     //TODO: _front_left_wheel_driver.setDutyCycle(effort);
 
-    _front_left_wheel_driver.setDutyCycle(effort/10);
+    _front_left_wheel_driver.setDutyCycle(effort);
 
     double a = 0;
     double b = 0;
@@ -166,7 +181,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
 
     ROS_INFO("Exiting PID control.");
     
-    double front_left_voltage_in = _front_left_wheel_driver.getVoltageIn();
+    //double front_left_voltage_in = _front_left_wheel_driver.getVoltageIn();
     double front_left_request_dutyCycle = 0.0;
 
     if (_cmd[0] != 0.0)
