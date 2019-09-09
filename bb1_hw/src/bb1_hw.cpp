@@ -155,10 +155,10 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
       effort = 0.95;
     } else if (effort < -0.95) {
       effort = -0.95;
-    } else if (effort < 0.01 && effort >= 0 || effort > -0.01 && effort <= 0) {
-      effort = 0;
+    } //else if (effort < 0.01 && effort >= 0 || effort > -0.01 && effort <= 0) {
+      //effort = 0;
       //test_pid_controller.reset();
-    }
+    //}
 
     ROS_INFO("Clamped output: %f", effort);
 
@@ -203,7 +203,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     // }
     // else
     // {
-    //   _front_left_wheel_driver.releaseMotor();
+    //    _front_left_wheel_driver.releaseMotor();
     // }
 
     double back_left_voltage_in = _back_left_wheel_driver.getVoltageIn();
