@@ -82,6 +82,9 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     //test_pid_controller.reset();
     //set up the time
     ros::Time last_time = ros::Time::now();
+
+    _front_left_wheel_low_pass_speed = 0;
+    alpha = 0.05;
     }
 
   void BB1_HW::read(const ros::Time& time, const ros::Duration& period)
@@ -123,16 +126,21 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
 
     ROS_INFO("Entering PID control...");
 
-    test_pid_controller.setGains(2.5, 0.1, 0.03, 1000, -1000);
+    test_pid_controller.setGains(0.5, 1.5, 0.000001, 10000, -10000);
 
     //ROS_INFO("Last time %d", last_time);
 
-    ROS_INFO("Current speed: %f, desired speed: %f, error: %f", _vel[0], _cmd[0], _cmd[0] - _vel[0]);
+    _front_left_wheel_low_pass_speed = alpha * _vel[0] + (1 - alpha) * _front_left_wheel_low_pass_speed;
+    ROS_INFO("Low pass speed: %f", _front_left_wheel_low_pass_speed);
+
+    //_vel[0] = _front_left_wheel_low_pass_speed;
+
+    ROS_INFO("Current speed: %f, desired speed: %f, error: %f", _front_left_wheel_low_pass_speed, _cmd[0], _cmd[0] - _front_left_wheel_low_pass_speed);
     //ROS_INFO("Time: %d, Last: %d, Since update: %d", ros::Time::now().nsec, last_time.nsec, ros::Time::now().nsec - last_time.nsec);
 
     //ros::Duration dt = t_now - pid_last_time_;
 
-    double effort = test_pid_controller.computeCommand(_cmd[0] - _vel[0], ros::Time::now() - last_time);
+    double effort = test_pid_controller.computeCommand(_cmd[0] - _front_left_wheel_low_pass_speed, ros::Time::now() - last_time);
     //double effort = test_pid_controller.computeCommand(_cmd[0] - _vel[0], ros::Duration(0.10));
     last_time = ros::Time::now();
 
@@ -149,6 +157,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
       effort = -0.95;
     } else if (effort < 0.01 && effort >= 0 || effort > -0.01 && effort <= 0) {
       effort = 0;
+      //test_pid_controller.reset();
     }
 
     ROS_INFO("Clamped output: %f", effort);
@@ -184,18 +193,18 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     //double front_left_voltage_in = _front_left_wheel_driver.getVoltageIn();
     double front_left_request_dutyCycle = 0.0;
 
-    if (_cmd[0] != 0.0)
-    {
-      double requestedERPM = _rad_per_sec_to_erpm_conversion_factor * _cmd[0];
-      ROS_DEBUG("Requested ERPM front left: %f", requestedERPM);
-      front_left_request_dutyCycle = requestedERPM / (front_left_voltage_in * _front_left_wheel_ikv * _motor_poles * 2);
-      ROS_DEBUG("Front left request dutycycle : %f", front_left_request_dutyCycle);
-       //_front_left_wheel_driver.setDutyCycle(front_left_request_dutyCycle);
-    }
-    else
-    {
-      _front_left_wheel_driver.releaseMotor();
-    }
+    // if (_cmd[0] != 0.0)
+    // {
+    //   double requestedERPM = _rad_per_sec_to_erpm_conversion_factor * _cmd[0];
+    //   ROS_DEBUG("Requested ERPM front left: %f", requestedERPM);
+    //   front_left_request_dutyCycle = requestedERPM / (front_left_voltage_in * _front_left_wheel_ikv * _motor_poles * 2);
+    //   ROS_DEBUG("Front left request dutycycle : %f", front_left_request_dutyCycle);
+    //    //_front_left_wheel_driver.setDutyCycle(front_left_request_dutyCycle);
+    // }
+    // else
+    // {
+    //   _front_left_wheel_driver.releaseMotor();
+    // }
 
     double back_left_voltage_in = _back_left_wheel_driver.getVoltageIn();
     double back_left_request_dutyCycle = 0.0;
@@ -221,7 +230,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
       ROS_DEBUG("Requested ERPM front right: %f", requestedERPM);
       front_right_request_dutyCycle = requestedERPM / (front_right_voltage_in * _front_right_wheel_ikv * _motor_poles * 2);
       ROS_DEBUG("Front right request dutycycle : %f", front_right_request_dutyCycle);
-      _front_right_wheel_driver.setDutyCycle(front_right_request_dutyCycle);
+      //_front_right_wheel_driver.setDutyCycle(front_right_request_dutyCycle);
     }
     else
     {
@@ -236,7 +245,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
       ROS_DEBUG("Requested ERPM back right: %f", requestedERPM);
       back_right_request_dutyCycle = requestedERPM / (back_right_voltage_in * _back_right_wheel_ikv * _motor_poles * 2);
       ROS_DEBUG("Back right request dutycycle : %f", back_right_request_dutyCycle);
-      _back_right_wheel_driver.setDutyCycle(back_right_request_dutyCycle);
+      //_back_right_wheel_driver.setDutyCycle(back_right_request_dutyCycle);
     }
     else
     {
