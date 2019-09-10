@@ -84,8 +84,37 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     ros::Time last_time = ros::Time::now();
 
     _front_left_wheel_low_pass_speed = 0;
-    alpha = 0.05;
+
+    //Parameter loading
+    //alpha
+    if(nh.getParam("bb1_motor_pid/alpha", alpha)) {
+      ROS_INFO("Loaded 'bb1_motor_pid/alpha' OK!");
+    } else {
+      ROS_FATAL("Unable to load 'bb1_motor_pid/alpha'...");
     }
+
+    //p
+    if(nh.getParam("bb1_motor_pid/p", pid_p)) {
+      ROS_INFO("Loaded 'bb1_motor_pid/p' OK!");
+    } else {
+      ROS_FATAL("Unable to load 'bb1_motor_pid/p'...");
+    }
+
+    //i
+    if(nh.getParam("bb1_motor_pid/i", pid_i)) {
+      ROS_INFO("Loaded 'bb1_motor_pid/i' OK!");
+    } else {
+      ROS_FATAL("Unable to load 'bb1_motor_pid/i'...");
+    }
+
+    //p
+    if(nh.getParam("bb1_motor_pid/d", pid_d)) {
+      ROS_INFO("Loaded 'bb1_motor_pid/d' OK!");
+    } else {
+      ROS_FATAL("Unable to load 'bb1_motor_pid/d'...");
+    }
+
+  }
 
   void BB1_HW::read(const ros::Time& time, const ros::Duration& period)
   {
@@ -124,9 +153,15 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
   {
     ROS_DEBUG("Writing to hardware...");
 
+    // Get current parameters: can't because 'nh' isn't in scope
+    // nh.getParam("bb1_motor_pid/alpha", alpha);
+    // nh.getParam("bb1_motor_pid/p", pid_p);
+    // nh.getParam("bb1_motor_pid/i", pid_i);
+    // nh.getParam("bb1_motor_pid/d", pid_d);
+
     ROS_INFO("Entering PID control...");
 
-    test_pid_controller.setGains(0.5, 1.5, 0.000001, 10000, -10000);
+    test_pid_controller.setGains(pid_p, pid_i, pid_d, 10000, -10000);
 
     //ROS_INFO("Last time %d", last_time);
 

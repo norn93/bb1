@@ -44,11 +44,14 @@ private:
   double _eff[4];
 
   control_toolbox::Pid test_pid_controller;
-  //ros::Time time;
   ros::Time last_time;
 
   double _front_left_wheel_low_pass_speed;
   double alpha;
+
+  double pid_p;
+  double pid_i;
+  double pid_d;
 };
 
 }
