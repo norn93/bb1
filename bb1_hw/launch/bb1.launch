@@ -36,5 +36,5 @@
     </node>
 
   <!-- Get the PID and velocity filtering for the motors -->
-  <rosparam command="load" file="$(find bb1_hw)/config/myparams.yaml" />
+  <rosparam command="load" file="$(find bb1_hw)/config/pid.yaml" />
 </launch>
