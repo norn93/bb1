@@ -16,8 +16,6 @@ class BB1_HW : public hardware_interface::RobotHW
 public:
   BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_port, 
     std::string front_left_wheel_port, std::string back_left_wheel_port,
-    double front_right_wheel_correction_factor, double back_right_wheel_correction_factor,
-    double front_left_wheel_correction_factor, double back_left_wheel_correction_factor,
     double tacho_pulses_per_revolution, int motor_poles, disp_pos_mode rotor_position_source, ros::NodeHandle nh);
   void read(const ros::Time& time, const ros::Duration& period);
   void write(const ros::Time& time, const ros::Duration& period);
@@ -27,10 +25,6 @@ private:
   wheel_driver _back_right_wheel_driver;
   wheel_driver _front_left_wheel_driver;
   wheel_driver _back_left_wheel_driver;
-  double _front_right_wheel_ikv;
-  double _back_right_wheel_ikv;
-  double _front_left_wheel_ikv;
-  double _back_left_wheel_ikv;
   double _tacho_pulses_per_revolution;
   double _tacho_conversion_factor;
   double _rad_per_sec_to_erpm_conversion_factor;
@@ -43,10 +37,21 @@ private:
   double _vel[4];
   double _eff[4];
 
-  control_toolbox::Pid test_pid_controller;
-  ros::Time last_time;
+  control_toolbox::Pid _front_left_pid_controller;
+  control_toolbox::Pid _back_left_pid_controller;
+  control_toolbox::Pid _front_right_pid_controller;
+  control_toolbox::Pid _back_right_pid_controller;
+  
+  ros::Time _front_left_last_time;
+  ros::Time _back_left_last_time;
+  ros::Time _front_right_last_time;
+  ros::Time _back_right_last_time;
 
   double _front_left_wheel_low_pass_speed;
+  double _back_left_wheel_low_pass_speed;
+  double _front_right_wheel_low_pass_speed;
+  double _back_right_wheel_low_pass_speed;
+
   double alpha;
 
   double pid_p;

@@ -26,10 +26,6 @@
       <param name="back_right_wheel_port" value="$(arg back_right_wheel_port)" />
       <param name="front_left_wheel_port" value="$(arg front_left_wheel_port)" />
       <param name="back_left_wheel_port" value="$(arg back_left_wheel_port)" />
-      <param name="front_right_wheel_ikv" value="8.1" />
-      <param name="back_right_wheel_ikv" value="8.1" />
-      <param name="front_left_wheel_ikv" value="8.1" />
-      <param name="back_left_wheel_ikv" value="8.1" />
       <param name="tacho_pulses_per_revolution" value="90" />
       <param name="motor_poles" value="15" />
       <param name="rotor_position_source" value="$(arg rotor_position_source)" />
