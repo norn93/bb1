@@ -16,10 +16,6 @@ int main(int argc, char** argv)
   std::string back_right_wheel_port;
   std::string front_left_wheel_port;
   std::string back_left_wheel_port;
-  double front_right_wheel_ikv;
-  double back_right_wheel_ikv;
-  double front_left_wheel_ikv;
-  double back_left_wheel_ikv;
   double tacho_pulses_per_revolution;
   int motor_poles;
 
@@ -45,30 +41,6 @@ int main(int argc, char** argv)
 
   if (!private_nh.getParam("back_left_wheel_port", back_left_wheel_port)) {
     ROS_FATAL("VESC communication beck_left_wheel_port parameter required.");
-    ros::shutdown();
-    return -1;
-  }
-
-  if (!private_nh.getParam("front_right_wheel_ikv", front_right_wheel_ikv)) {
-    ROS_FATAL("Parameter front_right_wheel_ikv required.");
-    ros::shutdown();
-    return -1;
-  }
-
-  if (!private_nh.getParam("back_right_wheel_ikv", back_right_wheel_ikv)) {
-    ROS_FATAL("Parameter back_right_wheel_ikv required.");
-    ros::shutdown();
-    return -1;
-  }
-
-  if (!private_nh.getParam("front_left_wheel_ikv", front_left_wheel_ikv)) {
-    ROS_FATAL("Parameter front_left_wheel_ikv required.");
-    ros::shutdown();
-    return -1;
-  }
-
-  if (!private_nh.getParam("back_left_wheel_ikv", back_left_wheel_ikv)) {
-    ROS_FATAL("Parameter back_left_wheel_ikv required.");
     ros::shutdown();
     return -1;
   }
@@ -109,9 +81,7 @@ int main(int argc, char** argv)
   }
 
   bb1::BB1_HW robot(front_right_wheel_port, back_right_wheel_port, 
-    front_left_wheel_port, back_left_wheel_port, 
-    front_right_wheel_ikv, back_right_wheel_ikv, 
-    front_left_wheel_ikv, back_left_wheel_ikv,
+    front_left_wheel_port, back_left_wheel_port,
     tacho_pulses_per_revolution, motor_poles, mode, nh);
   controller_manager::ControllerManager cm(&robot);
   ROS_INFO_STREAM_NAMED("hardware_interface","Starting loop");
