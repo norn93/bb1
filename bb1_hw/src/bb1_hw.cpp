@@ -84,28 +84,28 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     //Parameter loading
     //alpha
     if(nh.getParam("bb1_motor_pid/alpha", alpha)) {
-      ROS_DEBUG_THROTTLE(1, "Loaded 'bb1_motor_pid/alpha' OK!");
+      ROS_DEBUG("Loaded 'bb1_motor_pid/alpha' OK!");
     } else {
       ROS_FATAL("Unable to load 'bb1_motor_pid/alpha'...");
     }
 
     //p
     if(nh.getParam("bb1_motor_pid/p", pid_p)) {
-      ROS_DEBUG_THROTTLE(1, "Loaded 'bb1_motor_pid/p' OK!");
+      ROS_DEBUG("Loaded 'bb1_motor_pid/p' OK!");
     } else {
       ROS_FATAL("Unable to load 'bb1_motor_pid/p'...");
     }
 
     //i
     if(nh.getParam("bb1_motor_pid/i", pid_i)) {
-      ROS_DEBUG_THROTTLE(1, "Loaded 'bb1_motor_pid/i' OK!");
+      ROS_DEBUG("Loaded 'bb1_motor_pid/i' OK!");
     } else {
       ROS_FATAL("Unable to load 'bb1_motor_pid/i'...");
     }
 
     //p
     if(nh.getParam("bb1_motor_pid/d", pid_d)) {
-      ROS_DEBUG_THROTTLE(1, "Loaded 'bb1_motor_pid/d' OK!");
+      ROS_DEBUG("Loaded 'bb1_motor_pid/d' OK!");
     } else {
       ROS_FATAL("Unable to load 'bb1_motor_pid/d'...");
     }
@@ -114,7 +114,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
 
   void BB1_HW::read(const ros::Time& time, const ros::Duration& period)
   {
-    ROS_DEBUG_THROTTLE(1, "Reading from hardware...");
+    ROS_DEBUG("Reading from hardware...");
 
     _pos[0] = _front_left_wheel_driver.getDisplacement()*_tacho_conversion_factor;
     _pos[1] = _back_left_wheel_driver.getDisplacement()*_tacho_conversion_factor;
@@ -135,46 +135,46 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     double encoderDisplacementFrontRight = _front_right_wheel_driver.getEncoderDisplacement();
     double encoderDisplacementBackRight = _back_right_wheel_driver.getEncoderDisplacement();
 
-    ROS_DEBUG_THROTTLE(1, "Vars: %f : %f", _rad_per_sec_to_erpm_conversion_factor, _tacho_conversion_factor);
+    ROS_DEBUG("Vars: %f : %f", _rad_per_sec_to_erpm_conversion_factor, _tacho_conversion_factor);
 
-    ROS_DEBUG_THROTTLE(1, "Position: %f : %f : %f : %f", _pos[0], _pos[1], _pos[2], _pos[3]);
-    ROS_DEBUG_THROTTLE(1, "Encoder position: %f : %f : %f : %f", encoderDisplacementFrontLeft, encoderDisplacementBackLeft, 
+    ROS_DEBUG("Position: %f : %f : %f : %f", _pos[0], _pos[1], _pos[2], _pos[3]);
+    ROS_DEBUG("Encoder position: %f : %f : %f : %f", encoderDisplacementFrontLeft, encoderDisplacementBackLeft, 
       encoderDisplacementFrontRight, encoderDisplacementBackRight);
-    ROS_DEBUG_THROTTLE(1, "Velocity: %f : %f : %f : %f", _vel[0], _vel[1], _vel[2], _vel[3]);
-    ROS_DEBUG_THROTTLE(1, "Commands: %f : %f : %f : %f", _cmd[0], _cmd[1], _cmd[2], _cmd[3]);
-    ROS_DEBUG_THROTTLE(1, "Effort: %f : %f : %f : %f", _eff[0], _eff[1], _eff[2], _eff[3]);
+    ROS_DEBUG("Velocity: %f : %f : %f : %f", _vel[0], _vel[1], _vel[2], _vel[3]);
+    ROS_DEBUG("Commands: %f : %f : %f : %f", _cmd[0], _cmd[1], _cmd[2], _cmd[3]);
+    ROS_DEBUG("Effort: %f : %f : %f : %f", _eff[0], _eff[1], _eff[2], _eff[3]);
   }
 
   void BB1_HW::write(const ros::Time& time, const ros::Duration& period)
   {
     /////////// front_left ///////////
 
-    ROS_DEBUG_THROTTLE(1, "Entering front_left wheel control...");
+    ROS_DEBUG("Entering front_left wheel control...");
 
     // Set the PID gains according to the parameters
     _front_left_pid_controller.setGains(pid_p, pid_i, pid_d, 10000, -10000);
 
     // Calculate filtered velocity
     _front_left_wheel_low_pass_speed = alpha * _vel[0] + (1 - alpha) * _front_left_wheel_low_pass_speed;
-    ROS_DEBUG_THROTTLE(1, "Low pass velocity: %f", _front_left_wheel_low_pass_speed);
+    ROS_DEBUG("Low pass velocity: %f", _front_left_wheel_low_pass_speed);
 
-    ROS_DEBUG_THROTTLE(1, "Desired speed: %f, error: %f", _cmd[0], _cmd[0] - _front_left_wheel_low_pass_speed);
+    ROS_DEBUG("Desired speed: %f, error: %f", _cmd[0], _cmd[0] - _front_left_wheel_low_pass_speed);
 
     // Compute the effort
     double front_left_effort = _front_left_pid_controller.computeCommand(_cmd[0] - _front_left_wheel_low_pass_speed, ros::Time::now() - _front_left_last_time);
     // Reset the time
     _front_left_last_time = ros::Time::now();
-    ROS_DEBUG_THROTTLE(1, "Output: %f", front_left_effort);
+    ROS_DEBUG("Output: %f", front_left_effort);
 
     // Scaling for voltage
     double front_left_voltage_in = _front_left_wheel_driver.getVoltageIn();
-    ROS_DEBUG_THROTTLE(1, "Voltage: %f", front_left_voltage_in);
+    ROS_DEBUG("Voltage: %f", front_left_voltage_in);
     if (front_left_voltage_in > 1.0) {
       front_left_effort = front_left_effort/front_left_voltage_in;
     } else {
       front_left_effort = 0;
     }
-    ROS_DEBUG_THROTTLE(1, "Adjusted output: %f", front_left_effort);
+    ROS_DEBUG("Adjusted output: %f", front_left_effort);
 
     // Clamping output
     if (front_left_effort > 0.95) {
@@ -182,41 +182,41 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     } else if (front_left_effort < -0.95) {
       front_left_effort = -0.95;
     }
-    ROS_DEBUG_THROTTLE(1, "Clamped output: %f", front_left_effort);
+    ROS_DEBUG("Clamped output: %f", front_left_effort);
 
     // Write to the wheel
     _front_left_wheel_driver.setDutyCycle(front_left_effort);
 
-    ROS_DEBUG_THROTTLE(1, "Leaving front_left wheel control...");
+    ROS_DEBUG("Leaving front_left wheel control...");
 
     /////////// back_left ///////////
 
-    ROS_DEBUG_THROTTLE(1, "Entering back_left wheel control...");
+    ROS_DEBUG("Entering back_left wheel control...");
 
     // Set the PID gains according to the parameters
     _back_left_pid_controller.setGains(pid_p, pid_i, pid_d, 10000, -10000);
 
     // Calculate filtered velocity
     _back_left_wheel_low_pass_speed = alpha * _vel[1] + (1 - alpha) * _back_left_wheel_low_pass_speed;
-    ROS_DEBUG_THROTTLE(1, "Low pass velocity: %f", _back_left_wheel_low_pass_speed);
+    ROS_DEBUG("Low pass velocity: %f", _back_left_wheel_low_pass_speed);
 
-    ROS_DEBUG_THROTTLE(1, "Desired speed: %f, error: %f", _cmd[1], _cmd[1] - _back_left_wheel_low_pass_speed);
+    ROS_DEBUG("Desired speed: %f, error: %f", _cmd[1], _cmd[1] - _back_left_wheel_low_pass_speed);
 
     // Compute the effort
     double back_left_effort = _back_left_pid_controller.computeCommand(_cmd[1] - _back_left_wheel_low_pass_speed, ros::Time::now() - _back_left_last_time);
     // Reset the time
     _back_left_last_time = ros::Time::now();
-    ROS_DEBUG_THROTTLE(1, "Output: %f", back_left_effort);
+    ROS_DEBUG("Output: %f", back_left_effort);
 
     // Scaling for voltage
     double back_left_voltage_in = _back_left_wheel_driver.getVoltageIn();
-    ROS_DEBUG_THROTTLE(1, "Voltage: %f", back_left_voltage_in);
+    ROS_DEBUG("Voltage: %f", back_left_voltage_in);
     if (back_left_voltage_in > 1.0) {
       back_left_effort = back_left_effort/back_left_voltage_in;
     } else {
       back_left_effort = 0;
     }
-    ROS_DEBUG_THROTTLE(1, "Adjusted output: %f", back_left_effort);
+    ROS_DEBUG("Adjusted output: %f", back_left_effort);
 
     // Clamping output
     if (back_left_effort > 0.95) {
@@ -224,41 +224,41 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     } else if (back_left_effort < -0.95) {
       back_left_effort = -0.95;
     }
-    ROS_DEBUG_THROTTLE(1, "Clamped output: %f", back_left_effort);
+    ROS_DEBUG("Clamped output: %f", back_left_effort);
 
     // Write to the wheel
     _back_left_wheel_driver.setDutyCycle(back_left_effort);
 
-    ROS_DEBUG_THROTTLE(1, "Leaving back_left wheel control...");
+    ROS_DEBUG("Leaving back_left wheel control...");
 
     /////////// front_right ///////////
 
-    ROS_DEBUG_THROTTLE(1, "Entering front_right wheel control...");
+    ROS_DEBUG("Entering front_right wheel control...");
 
     // Set the PID gains according to the parameters
     _front_right_pid_controller.setGains(pid_p, pid_i, pid_d, 10000, -10000);
 
     // Calculate filtered velocity
     _front_right_wheel_low_pass_speed = alpha * _vel[2] + (1 - alpha) * _front_right_wheel_low_pass_speed;
-    ROS_DEBUG_THROTTLE(1, "Low pass velocity: %f", _front_right_wheel_low_pass_speed);
+    ROS_DEBUG("Low pass velocity: %f", _front_right_wheel_low_pass_speed);
 
-    ROS_DEBUG_THROTTLE(1, "Desired speed: %f, error: %f", _cmd[2], _cmd[2] - _front_right_wheel_low_pass_speed);
+    ROS_DEBUG("Desired speed: %f, error: %f", _cmd[2], _cmd[2] - _front_right_wheel_low_pass_speed);
 
     // Compute the effort (inverting the right wheel)
     double front_right_effort = _front_right_pid_controller.computeCommand(_cmd[2] - _front_right_wheel_low_pass_speed, ros::Time::now() - _front_right_last_time);
     // Reset the time
     _front_right_last_time = ros::Time::now();
-    ROS_DEBUG_THROTTLE(1, "Output: %f", front_right_effort);
+    ROS_DEBUG("Output: %f", front_right_effort);
 
     // Scaling for voltage
     double front_right_voltage_in = _front_right_wheel_driver.getVoltageIn();
-    ROS_DEBUG_THROTTLE(1, "Voltage: %f", front_right_voltage_in);
+    ROS_DEBUG("Voltage: %f", front_right_voltage_in);
     if (front_right_voltage_in > 1.0) {
       front_right_effort = front_right_effort/front_right_voltage_in;
     } else {
       front_right_effort = 0;
     }
-    ROS_DEBUG_THROTTLE(1, "Adjusted output: %f", front_right_effort);
+    ROS_DEBUG("Adjusted output: %f", front_right_effort);
 
     // Clamping output
     if (front_right_effort > 0.95) {
@@ -266,41 +266,41 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     } else if (front_right_effort < -0.95) {
       front_right_effort = -0.95;
     }
-    ROS_DEBUG_THROTTLE(1, "Clamped output: %f", front_right_effort);
+    ROS_DEBUG("Clamped output: %f", front_right_effort);
 
     // Write to the wheel
     _front_right_wheel_driver.setDutyCycle(front_right_effort);
 
-    ROS_DEBUG_THROTTLE(1, "Leaving front_right wheel control...");
+    ROS_DEBUG("Leaving front_right wheel control...");
 
     /////////// back_right ///////////
 
-    ROS_DEBUG_THROTTLE(1, "Entering back_right wheel control...");
+    ROS_DEBUG("Entering back_right wheel control...");
 
     // Set the PID gains according to the parameters
     _back_right_pid_controller.setGains(pid_p, pid_i, pid_d, 10000, -10000);
 
     // Calculate filtered velocity
     _back_right_wheel_low_pass_speed = alpha * _vel[3] + (1 - alpha) * _back_right_wheel_low_pass_speed;
-    ROS_DEBUG_THROTTLE(1, "Low pass velocity: %f", _back_right_wheel_low_pass_speed);
+    ROS_DEBUG("Low pass velocity: %f", _back_right_wheel_low_pass_speed);
 
-    ROS_DEBUG_THROTTLE(1, "Desired speed: %f, error: %f", _cmd[3], _cmd[3] - _back_right_wheel_low_pass_speed);
+    ROS_DEBUG("Desired speed: %f, error: %f", _cmd[3], _cmd[3] - _back_right_wheel_low_pass_speed);
 
     // Compute the effort (inverting the right wheel)
     double back_right_effort = _back_right_pid_controller.computeCommand(_cmd[3] - _back_right_wheel_low_pass_speed, ros::Time::now() - _back_right_last_time);
     // Reset the time
     _back_right_last_time = ros::Time::now();
-    ROS_DEBUG_THROTTLE(1, "Output: %f", back_right_effort);
+    ROS_DEBUG("Output: %f", back_right_effort);
 
     // Scaling for voltage
     double back_right_voltage_in = _back_right_wheel_driver.getVoltageIn();
-    ROS_DEBUG_THROTTLE(1, "Voltage: %f", back_right_voltage_in);
+    ROS_DEBUG("Voltage: %f", back_right_voltage_in);
     if (back_right_voltage_in > 1.0) {
       back_right_effort = back_right_effort/back_right_voltage_in;
     } else {
       back_right_effort = 0;
     }
-    ROS_DEBUG_THROTTLE(1, "Adjusted output: %f", back_right_effort);
+    ROS_DEBUG("Adjusted output: %f", back_right_effort);
 
     // Clamping output
     if (back_right_effort > 0.95) {
@@ -308,11 +308,11 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     } else if (back_right_effort < -0.95) {
       back_right_effort = -0.95;
     }
-    ROS_DEBUG_THROTTLE(1, "Clamped output: %f", back_right_effort);
+    ROS_DEBUG("Clamped output: %f", back_right_effort);
 
     // Write to the wheel
     _back_right_wheel_driver.setDutyCycle(back_right_effort);
 
-    ROS_DEBUG_THROTTLE(1, "Leaving back_right wheel control...");
+    ROS_DEBUG("Leaving back_right wheel control...");
   }
 }

@@ -54,7 +54,7 @@ linear:
     max_velocity           : 1.0  # m/s
     # min_velocity           : -0.3 # m/s
     has_acceleration_limits: true
-    max_acceleration       : 5.0  # m/s^2 35 is nice
+    max_acceleration       : 22.0  # m/s^2 (22 ~= 1)
     # min_acceleration       : -35.0 # m/s^2
     # has_jerk_limits        : true
     # max_jerk               : 5.0  # m/s^3
@@ -63,6 +63,6 @@ angular:
     has_velocity_limits    : true
     max_velocity           : 2.0  # rad/s
     has_acceleration_limits: true
-    max_acceleration       : 20.0  # rad/s^2 70 is nice
+    max_acceleration       : 88.0  # rad/s^2 (22 ~= 1)
     # has_jerk_limits        : true
     # max_jerk               : 2.5  # rad/s^3
