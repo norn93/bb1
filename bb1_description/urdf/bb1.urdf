@@ -9,8 +9,8 @@
 		<color rgba="0.25 0.25 0.25 2"/>
 	</material>
 
-	<material name="red">
-		<color rgba="1 0 0 2"/>
+	<material name="pink">
+		<color rgba="1 0.41 0.71 2"/>
 	</material>
 
 	<link name="base_link">
@@ -18,7 +18,7 @@
 			<geometry>
 				<box size="0.31 0.22 0.04"/>
 			</geometry>
-			<material name="red"/>
+			<material name="pink"/>
 		</visual>
 		<collision>
 			<geometry>
@@ -31,7 +31,7 @@
 		</inertial>
 	</link>
 
-	<link name="right_front_wheel">
+	<link name="front_right_wheel">
 		<visual>
 			<geometry>
 				<cylinder length="0.045" radius="0.085"/>
@@ -52,12 +52,12 @@
 	</link>
 	<joint name="front_right_wheel_joint" type="continuous">
 		<parent link="base_link"/>
-		<child link="right_front_wheel"/>
+		<child link="front_right_wheel"/>
 		<origin xyz="0.09 -0.12 -0.025"/>
 		<axis rpy="0 0 0" xyz="0 1 0"/>
 	</joint>
 
-	<link name="right_back_wheel">
+	<link name="back_right_wheel">
 		<visual>
 			<geometry>
 				<cylinder length="0.045" radius="0.085"/>
@@ -78,12 +78,12 @@
 	</link>
 	<joint name="back_right_wheel_joint" type="continuous">
 		<parent link="base_link"/>
-		<child link="right_back_wheel"/>
+		<child link="back_right_wheel"/>
 		<origin xyz="-0.09 -0.12 -0.025"/>
 		<axis rpy="0 0 0" xyz="0 1 0"/>
 	</joint>
 
-	<link name="left_front_wheel">
+	<link name="front_left_wheel">
 		<visual>
 			<geometry>
 				<cylinder length="0.045" radius="0.085"/>
@@ -104,12 +104,12 @@
 	</link>
 	<joint name="front_left_wheel_joint" type="continuous">
 		<parent link="base_link"/>
-		<child link="left_front_wheel"/>
+		<child link="front_left_wheel"/>
 		<origin xyz="0.09 0.12 -0.025"/>
 		<axis rpy="0 0 0" xyz="0 1 0"/>
 	</joint>
 
-	<link name="left_back_wheel">
+	<link name="back_left_wheel">
 		<visual>
 			<geometry>
 				<cylinder length="0.045" radius="0.085"/>
@@ -130,14 +130,14 @@
 	</link>
 	<joint name="back_left_wheel_joint" type="continuous">
 		<parent link="base_link"/>
-		<child link="left_back_wheel"/>
+		<child link="back_left_wheel"/>
 		<origin xyz="-0.09 0.12 -0.025"/>
 		<axis rpy="0 0 0" xyz="0 1 0"/>
 	</joint>
 
 <!-- This block provides the simulator (Gazebo) with information on a few additional
 physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more-->
-<gazebo reference="right_front_wheel">
+<gazebo reference="front_right_wheel">
   <mu1 value="200.0"/>
   <mu2 value="100.0"/>
   <kp value="10000000.0" />
@@ -145,7 +145,7 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
   <material>Gazebo/Grey</material>
 </gazebo>
 
-<gazebo reference="right_back_wheel">
+<gazebo reference="back_right_wheel">
   <mu1 value="200.0"/>
   <mu2 value="100.0"/>
   <kp value="10000000.0" />
@@ -153,7 +153,7 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
   <material>Gazebo/Grey</material>
 </gazebo>
 
-<gazebo reference="left_front_wheel">
+<gazebo reference="front_left_wheel">
   <mu1 value="200.0"/>
   <mu2 value="100.0"/>
   <kp value="10000000.0" />
@@ -161,7 +161,7 @@ physical properties. See http://gazebosim.org/tutorials/?tut=ros_urdf for more--
   <material>Gazebo/Grey</material>
 </gazebo>
 
-<gazebo reference="left_back_wheel">
+<gazebo reference="back_left_wheel">
   <mu1 value="200.0"/>
   <mu2 value="100.0"/>
   <kp value="10000000.0" />
@@ -192,9 +192,9 @@ simulation and visualization of the robot -->
   </joint>
 </transmission>
 
-<transmission name="base_to_left_front_wheel_trans">
+<transmission name="base_to_front_left_wheel_trans">
   <type>transmission_interface/SimpleTransmission</type>
-  <actuator name="base_to_left_front_wheel_motor">
+  <actuator name="base_to_front_left_wheel_motor">
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
   <joint name="front_left_wheel_joint">
@@ -202,9 +202,9 @@ simulation and visualization of the robot -->
   </joint>
 </transmission>
 
-<transmission name="base_to_left_back_wheel_trans">
+<transmission name="base_to_back_left_wheel_trans">
   <type>transmission_interface/SimpleTransmission</type>
-  <actuator name="base_to_left_back_wheel_motor">
+  <actuator name="base_to_back_left_wheel_motor">
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
   <joint name="back_left_wheel_joint">

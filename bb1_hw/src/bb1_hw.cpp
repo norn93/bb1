@@ -67,12 +67,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
 
     registerInterface(&_jnt_vel_interface);
 
-    //control_toolbox::Pid _front_left_pid_controller;
-    //p, i, d, i_max, i_min (the max and min reduce integral windup)
-    _front_left_pid_controller.initPid(1, 1, 1, 0.3, -0.3); //commented out because I don't think it's used
-    _back_left_pid_controller.initPid(1, 1, 1, 0.3, -0.3);
-    _front_right_pid_controller.initPid(1, 1, 1, 0.3, -0.3);
-    _back_right_pid_controller.initPid(1, 1, 1, 0.3, -0.3);
+    
     //set up the time
     ros::Time _front_left_last_time = ros::Time::now();
     ros::Time _back_left_last_time = ros::Time::now();
@@ -109,6 +104,13 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     } else {
       ROS_FATAL("Unable to load 'bb1_motor_pid/d'...");
     }
+
+    //control_toolbox::Pid _front_left_pid_controller;
+    //p, i, d, i_max, i_min (the max and min reduce integral windup)
+    _front_left_pid_controller.initPid(pid_p, pid_i, pid_d, 10000, -10000);
+    _back_left_pid_controller.initPid(pid_p, pid_i, pid_d, 10000, -10000);
+    _front_right_pid_controller.initPid(pid_p, pid_i, pid_d, 10000, -10000);
+    _back_right_pid_controller.initPid(pid_p, pid_i, pid_d, 10000, -10000);
 
   }
 
@@ -152,7 +154,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     ROS_DEBUG("Entering front_left wheel control...");
 
     // Set the PID gains according to the parameters
-    _front_left_pid_controller.setGains(pid_p, pid_i, pid_d, 10000, -10000);
+    //_front_left_pid_controller.setGains(pid_p, pid_i, pid_d, 10000, -10000);
 
     // Calculate filtered velocity
     _front_left_wheel_low_pass_speed = alpha * _vel[0] + (1 - alpha) * _front_left_wheel_low_pass_speed;
@@ -161,7 +163,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     ROS_DEBUG("Desired speed: %f, error: %f", _cmd[0], _cmd[0] - _front_left_wheel_low_pass_speed);
 
     // Compute the effort
-    double front_left_effort = _front_left_pid_controller.computeCommand(_cmd[0] - _front_left_wheel_low_pass_speed, ros::Time::now() - _front_left_last_time);
+    double front_left_effort = _front_left_pid_controller.computeCommand(_cmd[0] - _front_left_wheel_low_pass_speed, period);
     // Reset the time
     _front_left_last_time = ros::Time::now();
     ROS_DEBUG("Output: %f", front_left_effort);
@@ -194,7 +196,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     ROS_DEBUG("Entering back_left wheel control...");
 
     // Set the PID gains according to the parameters
-    _back_left_pid_controller.setGains(pid_p, pid_i, pid_d, 10000, -10000);
+    //_back_left_pid_controller.setGains(pid_p, pid_i, pid_d, 10000, -10000);
 
     // Calculate filtered velocity
     _back_left_wheel_low_pass_speed = alpha * _vel[1] + (1 - alpha) * _back_left_wheel_low_pass_speed;
@@ -203,7 +205,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     ROS_DEBUG("Desired speed: %f, error: %f", _cmd[1], _cmd[1] - _back_left_wheel_low_pass_speed);
 
     // Compute the effort
-    double back_left_effort = _back_left_pid_controller.computeCommand(_cmd[1] - _back_left_wheel_low_pass_speed, ros::Time::now() - _back_left_last_time);
+    double back_left_effort = _back_left_pid_controller.computeCommand(_cmd[1] - _back_left_wheel_low_pass_speed, period);
     // Reset the time
     _back_left_last_time = ros::Time::now();
     ROS_DEBUG("Output: %f", back_left_effort);
@@ -236,7 +238,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     ROS_DEBUG("Entering front_right wheel control...");
 
     // Set the PID gains according to the parameters
-    _front_right_pid_controller.setGains(pid_p, pid_i, pid_d, 10000, -10000);
+    //_front_right_pid_controller.setGains(pid_p, pid_i, pid_d, 10000, -10000);
 
     // Calculate filtered velocity
     _front_right_wheel_low_pass_speed = alpha * _vel[2] + (1 - alpha) * _front_right_wheel_low_pass_speed;
@@ -245,7 +247,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     ROS_DEBUG("Desired speed: %f, error: %f", _cmd[2], _cmd[2] - _front_right_wheel_low_pass_speed);
 
     // Compute the effort (inverting the right wheel)
-    double front_right_effort = _front_right_pid_controller.computeCommand(_cmd[2] - _front_right_wheel_low_pass_speed, ros::Time::now() - _front_right_last_time);
+    double front_right_effort = _front_right_pid_controller.computeCommand(_cmd[2] - _front_right_wheel_low_pass_speed, period);
     // Reset the time
     _front_right_last_time = ros::Time::now();
     ROS_DEBUG("Output: %f", front_right_effort);
@@ -278,7 +280,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     ROS_DEBUG("Entering back_right wheel control...");
 
     // Set the PID gains according to the parameters
-    _back_right_pid_controller.setGains(pid_p, pid_i, pid_d, 10000, -10000);
+    //_back_right_pid_controller.setGains(pid_p, pid_i, pid_d, 10000, -10000);
 
     // Calculate filtered velocity
     _back_right_wheel_low_pass_speed = alpha * _vel[3] + (1 - alpha) * _back_right_wheel_low_pass_speed;
@@ -287,7 +289,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     ROS_DEBUG("Desired speed: %f, error: %f", _cmd[3], _cmd[3] - _back_right_wheel_low_pass_speed);
 
     // Compute the effort (inverting the right wheel)
-    double back_right_effort = _back_right_pid_controller.computeCommand(_cmd[3] - _back_right_wheel_low_pass_speed, ros::Time::now() - _back_right_last_time);
+    double back_right_effort = _back_right_pid_controller.computeCommand(_cmd[3] - _back_right_wheel_low_pass_speed, period);
     // Reset the time
     _back_right_last_time = ros::Time::now();
     ROS_DEBUG("Output: %f", back_right_effort);

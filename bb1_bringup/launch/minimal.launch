@@ -21,7 +21,7 @@
             file="$(find bb1_bringup)/config/mydiffdrive.yaml"
             ns="bb1_diff_drive_controller" />
 
-  <node name="bb1_controller_spawner" pkg="controller_manager" type="spawner"
+  <node name="bb1_controller_spawner" pkg="controller_manager" type="spawner" respawn="true"
     args="bb1_joint_state_controller
           bb1_diff_drive_controller"/>
 
@@ -31,9 +31,9 @@
     </node> -->
 
     <!-- State publisher -->
-    <!-- <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher"> -->
-      <!-- <param name="publish_frequency" type="double" value="50.0" /> -->
-    <!-- </node> -->
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+      <param name="publish_frequency" type="double" value="50.0" />
+    </node>
 
     <!-- mobile base nodelet manager -->
     <!-- <node pkg="nodelet" type="nodelet" name="mobile_base_nodelet_manager" args="manager"/> -->
