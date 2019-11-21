@@ -1,0 +1,3 @@
+float32 average_voltage
+float32 average_temperature
+float32 maximum_temperature
