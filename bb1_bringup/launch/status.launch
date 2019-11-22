@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<launch>
+	<node name="bb1_status" pkg="bb1_status" type="status.py" output="screen"/>
+</launch>
