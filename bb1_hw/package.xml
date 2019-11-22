@@ -55,12 +55,14 @@
   <build_depend>hardware_interface</build_depend>
   <build_depend>vesc_driver</build_depend>
   <build_depend>vesc_msgs</build_depend>
+  <build_depend>control_toolbox</build_depend>
 
   <exec_depend>roscpp</exec_depend>
   <exec_depend>controller_manager</exec_depend>
   <exec_depend>hardware_interface</exec_depend>
   <exec_depend>vesc_driver</exec_depend>
   <exec_depend>vesc_msgs</exec_depend>
+  <exec_depend>control_toolbox</exec_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
