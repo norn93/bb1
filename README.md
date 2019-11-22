@@ -1,8 +1,13 @@
 # bb1
 
+roscore
+
 roslaunch bb1_teleop joystick.launch
 
-(update the udev here)
+sudo udevadm control --reload-rules && sudo service udev restart && sudo udevadm trigger
 
-roslaunch bb1_bringup mydiffdrive.launch
+Wait for a bit.
 
+roslaunch bb1_bringup minimal.launch
+
+roslaunch bb1_bringup status.launch
