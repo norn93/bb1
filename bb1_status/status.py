@@ -42,9 +42,23 @@ cell_capacity = [
 
 def capacity(voltage, cells = 6):
 	cell_voltage = round(voltage/cells, 2)
-	for data in cell_capacity:
-		if cell_voltage <= data[0]:
+	if cell_voltage == 0:
+		return 0
+	print("cell:", cell_voltage)
+	for i, data in enumerate(cell_capacity):
+		this_voltage = data
+		next_voltage = cell_capacity[i+1]
+		print(this_voltage, next_voltage)
+		if cell_voltage == this_voltage[0]:
+			print('here')
 			return data[1]
+		if cell_voltage < next_voltage[0] and cell_voltage > this_voltage[0]:
+			print('ther')
+			rise = next_voltage[1] - this_voltage[1]
+			run = next_voltage[0] - this_voltage[0]
+			gradient = rise / run
+			print(gradient)
+			return this_voltage[1] + gradient * (cell_voltage - this_voltage[0])
 	return 100
 
 def average(dictionary):
