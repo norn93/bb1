@@ -60,5 +60,12 @@
 
   <!-- teleop -->
   <include file="$(find bb1_teleop)/launch/joystick.launch"/>
-
+  
+  <!-- imu -->
+  <node pkg="mpu6050_serial_to_imu" type="mpu6050_serial_to_imu_node" name="mpu6050_serial_to_imu_node" required="true">
+    <param name="port" value="/dev/ttyUSB0"/>
+    <param name="broadcast_tf" value="true" /> 
+  </node>
+  <node pkg="tf" type="static_transform_publisher" name="imu_base_broadcaster" args="0 0 0.03 0 0 0 base_link imu_link 10" />
+  
 </launch>
