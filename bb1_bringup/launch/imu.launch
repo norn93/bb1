@@ -4,5 +4,5 @@
     <param name="port" value="/dev/ttyUSB1"/>
     <param name="broadcast_tf" value="false" /> 
   </node>
-  <node pkg="tf" type="static_transform_publisher" name="imu_base_broadcaster" args="0 0 0.03 0 0 0 base_link imu_link 10" />
+  <node pkg="tf" type="static_transform_publisher" name="imu_base_broadcaster" args="0 0 0.03 0 0 0 base_link imu_link 61" />
 </launch>
