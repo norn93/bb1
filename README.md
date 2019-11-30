@@ -1,6 +1,6 @@
 # bb1
 
-sudo apt install ros-melodic-yocs-cmd-vel-mux ros-melodic-robot-state-publisher ros-melodic-teleop-twist-joy ros-melodic-joy
+sudo apt install ros-melodic-yocs-cmd-vel-mux ros-melodic-robot-state-publisher ros-melodic-teleop-twist-joy ros-melodic-joy ros-melodic-diff-drive-controller ros-melodic-joint-state-controller
 
 roscore
 
