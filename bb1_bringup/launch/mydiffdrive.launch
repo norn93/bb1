@@ -20,10 +20,6 @@
     args="bb1_joint_state_controller
           bb1_diff_drive_controller"/>
 
-  <!-- <node name="rqt_robot_steering" pkg="rqt_robot_steering" type="rqt_robot_steering">
-    <param name="default_topic" value="/my_diff_drive_controller/cmd_vel"/>
-  </node> -->
-
  <!-- bb1 nodelet manager -->
   <node pkg="nodelet" type="nodelet" name="bb1_nodelet_manager" args="manager"/>
 

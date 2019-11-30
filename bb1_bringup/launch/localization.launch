@@ -1,9 +1,6 @@
 <?xml version="1.0"?>
 <launch>
 
-  <!-- static imu transform -->
-  <!-- <node pkg="tf" type="static_transform_publisher" name="imu_link_broadcaster" args="0 0 1 0 0 0 base_link imu_base 100" /> -->
-
   <node pkg="robot_localization" type="ekf_localization_node"
         name="robot_localization_ekf_node_odom"
         clear_params="true">
@@ -35,6 +32,8 @@
         false, false, true,
         true, false, false]
     </rosparam>
+
     <param name="print_diagnostics" value="true"/>
+
   </node>
 </launch>

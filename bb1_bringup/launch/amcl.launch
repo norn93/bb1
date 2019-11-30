@@ -2,6 +2,5 @@
 <launch>
   <node name="map_server" pkg="map_server" type="map_server" args="/home/ubuntu/map.yaml" />
   <include file="$(find amcl)/examples/amcl_diff.launch">
-    <!--<arg name="odom_frame_id" value="odometry/filtered"/>-->
   </include>
 </launch>
