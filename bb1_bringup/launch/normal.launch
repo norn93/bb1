@@ -17,6 +17,6 @@
   <include file="$(find bb1_bringup)/launch/localization.launch"/>
 
   <!-- laser scan -->
-  <include file="$(find bb1_bringup)/launch/laser_scan.launch"
+  <include file="$(find bb1_bringup)/launch/laser_scan.launch"/>
  
 </launch>
