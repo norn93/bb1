@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <launch>
-  <node name="map_server" pkg="map_server" type="map_server" args="/home/ubuntu/map.yaml" />
+  <!-- load map of home -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find bb1_maps)/home.yaml" />
   <include file="$(find amcl)/examples/amcl_diff.launch">
   </include>
 </launch>
