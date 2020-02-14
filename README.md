@@ -1,6 +1,10 @@
 # bb1
 
+To install:
+```
 sudo apt install ros-melodic-yocs-cmd-vel-mux ros-melodic-robot-state-publisher ros-melodic-teleop-twist-joy ros-melodic-joy ros-melodic-diff-drive-controller ros-melodic-joint-state-controller
+```
+To run:
 ```
 roscore
 roslaunch bb1_teleop joystick.launch
