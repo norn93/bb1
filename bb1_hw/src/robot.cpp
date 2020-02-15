@@ -85,11 +85,18 @@ int main(int argc, char** argv)
     tacho_pulses_per_revolution, motor_poles, mode, nh);
   controller_manager::ControllerManager cm(&robot);
   ROS_INFO_STREAM_NAMED("hardware_interface","Starting loop");
+
+  ros::Time last_time = ros::Time::now();
+
   while (ros::ok())
   {
-     robot.read(ros::Time::now(),r.cycleTime());
-     cm.update(ros::Time::now(), r.cycleTime());
-     robot.write(ros::Time::now(), r.cycleTime());
+     ros::Time current_time = ros::Time::now();
+     ros::Duration elapsed_time = current_time - last_time;
+     last_time = current_time;
+
+     robot.read(current_time, elapsed_time);
+     cm.update(current_time, elapsed_time);
+     robot.write(current_time, elapsed_time);
      r.sleep();
   }
   ROS_INFO_STREAM_NAMED("hardware_interface","Shutting down");
