@@ -8,7 +8,7 @@
   <node pkg="bb1_status" type="status.py" name="bb1_status"/>
 
   <!-- teleop -->
-  <include file="$(find bb1_teleop)/launch/joystick.launch"/>
+  <!-- <include file="$(find bb1_teleop)/launch/joystick.launch"/> -->
   
   <!-- imu -->
   <include file="$(find bb1_bringup)/launch/imu.launch"/>
