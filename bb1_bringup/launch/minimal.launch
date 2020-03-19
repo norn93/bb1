@@ -35,4 +35,6 @@
     <remap from="cmd_vel_mux/output" to="/bb1_diff_drive_controller/cmd_vel"/>
   </node>
 
+  <!-- teleop -->
+  <include file="$(find bb1_teleop)/launch/joystick.launch"/>
 </launch>
