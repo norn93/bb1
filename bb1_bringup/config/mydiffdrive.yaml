@@ -63,6 +63,6 @@ angular:
     has_velocity_limits    : true
     max_velocity           : 2.0  # rad/s
     has_acceleration_limits: true
-    max_acceleration       : 1.0  # rad/s^2 (22 ~= 1)
+    max_acceleration       : 3.0  # rad/s^2 (22 ~= 1)
     # has_jerk_limits        : true
     # max_jerk               : 2.5  # rad/s^3
