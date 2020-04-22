@@ -19,7 +19,7 @@ int main(int argc, char** argv)
   double tacho_pulses_per_revolution;
   int motor_poles;
 
-  ros::Rate r(100); // 100Hz
+  ros::Rate r(100000); // 100Hz
 
   if (!private_nh.getParam("front_right_wheel_port", front_right_wheel_port)) {
     ROS_FATAL("VESC communication front_right_wheel_port parameter required.");
