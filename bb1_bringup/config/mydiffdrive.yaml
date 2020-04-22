@@ -9,8 +9,8 @@ wheel_separation: 0.32
 cmd_vel_timeout: 0.25
 
 # Wheel separation and radius multipliers
-wheel_separation_multiplier: 0.5 # default: 1.0 and was 0.67
-#wheel_radius_multiplier    : 1.0 # default: 1.0
+wheel_separation_multiplier: 1.0 # default: 1.0 and was 0.67
+wheel_radius_multiplier    : 1.0 # default: 1.0
 
 # Odometry fused with IMU is published by robot_localization, so
   # no need to publish a TF based on encoders alone.
@@ -52,10 +52,8 @@ linear:
   x:
     has_velocity_limits    : true
     max_velocity           : 1.0  # m/s
-    # min_velocity           : -0.3 # m/s
     has_acceleration_limits: true
-    max_acceleration       : 20.0  # m/s^2 (22 ~= 1)
-    # min_acceleration       : -35.0 # m/s^2
+    max_acceleration       : 0.5  # m/s^2 (22 ~= 1)
     # has_jerk_limits        : true
     # max_jerk               : 5.0  # m/s^3
 angular:
@@ -63,6 +61,6 @@ angular:
     has_velocity_limits    : true
     max_velocity           : 2.0  # rad/s
     has_acceleration_limits: true
-    max_acceleration       : 100.0  # rad/s^2 (22 ~= 1)
+    max_acceleration       : 2.0  # rad/s^2 (22 ~= 1)
     # has_jerk_limits        : true
     # max_jerk               : 2.5  # rad/s^3
