@@ -69,10 +69,10 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
 
     
     //set up the time
-    ros::Time _front_left_last_time = ros::Time::now();
-    ros::Time _back_left_last_time = ros::Time::now();
-    ros::Time _front_right_last_time = ros::Time::now();
-    ros::Time _back_right_last_time = ros::Time::now();
+    // ros::Time _front_left_last_time = ros::Time::now();
+    // ros::Time _back_left_last_time = ros::Time::now();
+    // ros::Time _front_right_last_time = ros::Time::now();
+    // ros::Time _back_right_last_time = ros::Time::now();
 
     //_front_left_wheel_low_pass_speed = 0;
 
@@ -114,7 +114,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
 
   }
 
-  void BB1_HW::read(const ros::Time& time, const ros::Duration& period)
+  void BB1_HW::read()
   {
     // ROS_DEBUG("Reading from hardware...");
 
@@ -122,6 +122,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     _pos[1] = _back_left_wheel_driver.getDisplacement()*_tacho_conversion_factor;
     _pos[2] = _front_right_wheel_driver.getDisplacement()*_tacho_conversion_factor;
     _pos[3] = _back_right_wheel_driver.getDisplacement()*_tacho_conversion_factor;
+
     _vel[0] = _front_left_wheel_driver.getSpeed()/_rad_per_sec_to_erpm_conversion_factor;
     _vel[1] = _back_left_wheel_driver.getSpeed()/_rad_per_sec_to_erpm_conversion_factor;
     _vel[2] = _front_right_wheel_driver.getSpeed()/_rad_per_sec_to_erpm_conversion_factor;
@@ -147,7 +148,7 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     // ROS_DEBUG("Effort: %f : %f : %f : %f", _eff[0], _eff[1], _eff[2], _eff[3]);
   }
 
-  void BB1_HW::write(const ros::Time& time, const ros::Duration& period)
+  void BB1_HW::write(const ros::Duration& elapsed_time)
   {
     /////////// front_left ///////////
 
@@ -163,9 +164,9 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     // ROS_DEBUG("Desired speed: %f, error: %f", _cmd[0], _cmd[0] - _front_left_wheel_low_pass_speed);
 
     // Compute the effort
-    double front_left_effort = _front_left_pid_controller.computeCommand(_cmd[0] - _front_left_wheel_low_pass_speed, period);
+    double front_left_effort = _front_left_pid_controller.computeCommand(_cmd[0] - _front_left_wheel_low_pass_speed, elapsed_time);
     // Reset the time
-    _front_left_last_time = ros::Time::now();
+    // _front_left_last_time = ros::Time::now();
     // ROS_DEBUG("Output: %f", front_left_effort);
 
     // Scaling for voltage
@@ -205,9 +206,9 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     // ROS_DEBUG("Desired speed: %f, error: %f", _cmd[1], _cmd[1] - _back_left_wheel_low_pass_speed);
 
     // Compute the effort
-    double back_left_effort = _back_left_pid_controller.computeCommand(_cmd[1] - _back_left_wheel_low_pass_speed, period);
+    double back_left_effort = _back_left_pid_controller.computeCommand(_cmd[1] - _back_left_wheel_low_pass_speed, elapsed_time);
     // Reset the time
-    _back_left_last_time = ros::Time::now();
+    // _back_left_last_time = ros::Time::now();
     // ROS_DEBUG("Output: %f", back_left_effort);
 
     // Scaling for voltage
@@ -247,9 +248,9 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     // ROS_DEBUG("Desired speed: %f, error: %f", _cmd[2], _cmd[2] - _front_right_wheel_low_pass_speed);
 
     // Compute the effort (inverting the right wheel)
-    double front_right_effort = _front_right_pid_controller.computeCommand(_cmd[2] - _front_right_wheel_low_pass_speed, period);
+    double front_right_effort = _front_right_pid_controller.computeCommand(_cmd[2] - _front_right_wheel_low_pass_speed, elapsed_time);
     // Reset the time
-    _front_right_last_time = ros::Time::now();
+    // _front_right_last_time = ros::Time::now();
     // ROS_DEBUG("Output: %f", front_right_effort);
 
     // Scaling for voltage
@@ -289,9 +290,9 @@ BB1_HW::BB1_HW(std::string front_right_wheel_port, std::string back_right_wheel_
     // ROS_DEBUG("Desired speed: %f, error: %f", _cmd[3], _cmd[3] - _back_right_wheel_low_pass_speed);
 
     // Compute the effort (inverting the right wheel)
-    double back_right_effort = _back_right_pid_controller.computeCommand(_cmd[3] - _back_right_wheel_low_pass_speed, period);
+    double back_right_effort = _back_right_pid_controller.computeCommand(_cmd[3] - _back_right_wheel_low_pass_speed, elapsed_time);
     // Reset the time
-    _back_right_last_time = ros::Time::now();
+    // _back_right_last_time = ros::Time::now();
     // ROS_DEBUG("Output: %f", back_right_effort);
 
     // Scaling for voltage

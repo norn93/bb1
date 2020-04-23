@@ -88,9 +88,9 @@ int main(int argc, char** argv)
 
   while (ros::ok())
   {
-     robot.read(ros::Time::now(),r.cycleTime());
+     robot.read();
      cm.update(ros::Time::now(), r.cycleTime());
-     robot.write(ros::Time::now(), r.cycleTime());
+     robot.write(r.cycleTime());
      r.sleep();
   }
   ROS_INFO_STREAM_NAMED("hardware_interface","Shutting down");
