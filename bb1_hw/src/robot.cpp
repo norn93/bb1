@@ -2,6 +2,21 @@
 #include <iostream>
 #include "controller_manager/controller_manager.h"
 #include <hardware_interface/robot_hw.h>
+#include "ros/callback_queue.h"
+
+void controlLoop(ros::Time& last_time, 
+    controller_manager::ControllerManager& cm, 
+    bb1::BB1_HW& robot) {
+
+  // Calculate monotonic time difference
+  ros::Time this_time = ros::Time::now();
+  //boost::chrono::duration<double> elapsed_duration = this_time - last_time;
+  ros::Duration elapsed = this_time - last_time;
+  //last_time = this_time;
+  ROS_WARN("%f", elapsed.toSec());
+  last_time = this_time;
+  return;
+}
 
 int main(int argc, char** argv)
 {
@@ -80,11 +95,21 @@ int main(int argc, char** argv)
     }
   }
 
+  // Initialize robot hardware and link to controller manager
   bb1::BB1_HW robot(front_right_wheel_port, back_right_wheel_port, 
     front_left_wheel_port, back_left_wheel_port,
     tacho_pulses_per_revolution, motor_poles, mode, nh);
   controller_manager::ControllerManager cm(&robot);
+
+  ros::Time last_time = ros::Time::now();
+  ros::CallbackQueue bb1_queue;
+
+  ros::Timer control_loop = nh.createTimer(ros::Duration(0.01), 
+     boost::bind(controlLoop, last_time, boost::ref(cm), boost::ref(robot)));
+
   ROS_INFO_STREAM_NAMED("hardware_interface","Starting loop");
+
+  //ros::spin();
 
   while (ros::ok())
   {
