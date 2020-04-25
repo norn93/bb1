@@ -8,20 +8,17 @@ void controlLoop(ros::Time& last_time,
     controller_manager::ControllerManager& cm, 
     bb1::BB1_HW& robot) {
 
-  // if (ros::ok()) {
-    // Calculate monotonic time difference
-    ros::Time this_time = ros::Time::now();
-    //boost::chrono::duration<double> elapsed_duration = this_time - last_time;
-    ros::Duration elapsed = this_time - last_time;
-    
-    robot.read();
-    cm.update(ros::Time::now(), elapsed);
-    robot.write(elapsed);
-    // r.sleep();
+  // Calculate monotonic time difference
+  ros::Time this_time = ros::Time::now();
+  ros::Duration elapsed = this_time - last_time;
+  
+  robot.read();
+  cm.update(ros::Time::now(), elapsed);
+  robot.write(elapsed);
 
-    ROS_WARN("LOOP %f", elapsed.toSec());
-    last_time = this_time;
-  // }
+  //ROS_WARN("LOOP %f", elapsed.toSec());
+  last_time = this_time;
+    
   return;
 }
 
@@ -109,10 +106,10 @@ int main(int argc, char** argv)
   // Setup separate queue and single-threaded spinner to process timer callbacks
   // that interface with BB1 hardware
   ros::CallbackQueue bb1_queue;
-  ros::AsyncSpinner spinner(4);//, &bb1_queue);
+  ros::AsyncSpinner spinner(2);//, &bb1_queue);
 
   ros::Time last_time = ros::Time::now();
-  ros::Timer control_loop = nh.createTimer(ros::Duration(0.01), 
+  ros::Timer control_loop = nh.createTimer(ros::Duration(0.005), 
     boost::bind(controlLoop, last_time, boost::ref(cm), boost::ref(robot)));
 
   ROS_INFO_STREAM_NAMED("hardware_interface","Starting spinner");
