@@ -6,10 +6,10 @@
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" />
 
   <rosparam command="load"
-            file="$(find bb1_bringup)/config/joints.yaml"
+            file="$(find bb1_control)/config/joints.yaml"
             ns="bb1_joint_state_controller" />
   <rosparam command="load"
-            file="$(find bb1_bringup)/config/mydiffdrive.yaml"
+            file="$(find bb1_control)/config/diffdrive.yaml"
             ns="bb1_diff_drive_controller" />
 
 </launch>
