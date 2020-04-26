@@ -7,7 +7,48 @@
   <arg name="gui" default="true"/>
   <arg name="headless" default="false"/>
   <arg name="debug" default="false"/>
-  <arg name="model" default="$(find urdf_tutorial)/urdf/08-macroed.urdf.xacro"/>
+
+  <!-- Load model -->
+  <param name="robot_description" textfile="$(find bb1_description)/urdf/bb1.urdf"/>
+
+  <!-- Load the gazebo params -->
+  <rosparam command="load"
+          file="$(find bb1_bringup)/config/gazebo_pid.yaml"
+  />
+
+  <!-- Load the joint state controller -->
+  <rosparam command="load"
+          file="$(find bb1_control)/config/joints.yaml"
+          ns="bb1_joint_state_controller" />
+
+  <!-- Load the differential drive controller -->
+  <rosparam command="load"
+          file="$(find bb1_control)/config/diffdrive.yaml"
+          ns="bb1_diff_drive_controller" />
+
+  <node name="bb1_controller_spawner" pkg="controller_manager" type="spawner" respawn="true"
+    args="bb1_joint_state_controller
+          bb1_diff_drive_controller"/>
+
+    <!-- State publisher -->
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="50.0" />
+  </node>
+
+  <!-- bb1 nodelet manager -->
+  <node pkg="nodelet" type="nodelet" name="bb1_nodelet_manager" args="manager"/>
+
+  <!-- velocity commands multiplexer -->
+  <node pkg="nodelet" type="nodelet" name="cmd_vel_mux" args="load yocs_cmd_vel_mux/CmdVelMuxNodelet bb1_nodelet_manager">
+    <param name="yaml_cfg_file" value="$(find bb1_control)/config/mux.yaml"/>
+    <remap from="cmd_vel_mux/output" to="/bb1_diff_drive_controller/cmd_vel"/>
+  </node>
+  
+  <!-- convert joint states to TF transforms for rviz, etc -->
+<!--   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+    respawn="false" output="screen">
+    <remap from="/joint_states" to="/bb1/joint_states" />
+  </node> -->
 
   <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -18,14 +59,15 @@
     <arg name="headless" value="$(arg headless)"/>
   </include>
 
-  <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
-
   <!-- push robot_description to factory and spawn robot in gazebo -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"
         args="-z 1.0 -unpause -urdf -model robot -param robot_description" respawn="false" output="screen" />
 
-  <node pkg="robot_state_publisher" type="robot_state_publisher"  name="robot_state_publisher">
+<!--   <node pkg="robot_state_publisher" type="robot_state_publisher"  name="robot_state_publisher">
     <param name="publish_frequency" type="double" value="30.0" />
-  </node>
+  </node> -->
+
+  <!-- teleop -->
+  <include file="$(find bb1_teleop)/launch/joystick.launch"/>
 
 </launch>
