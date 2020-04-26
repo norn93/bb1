@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- control -->
+  <include file="$(find bb1_control)/launch/control.launch"/>
+
+  <!-- teleop -->
+  <include file="$(find bb1_teleop)/launch/joystick.launch"/>
+  
+</launch>

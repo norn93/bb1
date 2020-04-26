@@ -2,16 +2,33 @@
 #include <iostream>
 #include "controller_manager/controller_manager.h"
 #include <hardware_interface/robot_hw.h>
+#include "ros/callback_queue.h"
+
+void controlLoop(ros::Time& last_time, 
+    controller_manager::ControllerManager& cm, 
+    bb1::BB1_HW& robot) {
+
+  // Calculate monotonic time difference
+  ros::Time this_time = ros::Time::now();
+  ros::Duration elapsed = this_time - last_time;
+  
+  robot.read();
+  cm.update(ros::Time::now(), elapsed);
+  robot.write(elapsed);
+
+  //ROS_WARN("LOOP %f", elapsed.toSec());
+  last_time = this_time;
+    
+  return;
+}
 
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "bb1_robot");
-  // Allow the action server to recieve and send ros messages
-  ros::AsyncSpinner spinner(4);
-  spinner.start();
 
   ros::NodeHandle nh;
   ros::NodeHandle private_nh("~");
+
   std::string front_right_wheel_port;
   std::string back_right_wheel_port;
   std::string front_left_wheel_port;
@@ -19,7 +36,7 @@ int main(int argc, char** argv)
   double tacho_pulses_per_revolution;
   int motor_poles;
 
-  ros::Rate r(100); // 100Hz
+  //ros::Rate r(100000); // 100Hz
 
   if (!private_nh.getParam("front_right_wheel_port", front_right_wheel_port)) {
     ROS_FATAL("VESC communication front_right_wheel_port parameter required.");
@@ -80,18 +97,34 @@ int main(int argc, char** argv)
     }
   }
 
+  // Initialize robot hardware and link to controller manager
   bb1::BB1_HW robot(front_right_wheel_port, back_right_wheel_port, 
     front_left_wheel_port, back_left_wheel_port,
     tacho_pulses_per_revolution, motor_poles, mode, nh);
   controller_manager::ControllerManager cm(&robot);
-  ROS_INFO_STREAM_NAMED("hardware_interface","Starting loop");
-  while (ros::ok())
-  {
-     robot.read(ros::Time::now(),r.cycleTime());
-     cm.update(ros::Time::now(), r.cycleTime());
-     robot.write(ros::Time::now(), r.cycleTime());
-     r.sleep();
-  }
+
+  // Setup separate queue and single-threaded spinner to process timer callbacks
+  // that interface with BB1 hardware
+  ros::CallbackQueue bb1_queue;
+  ros::AsyncSpinner spinner(4);//, &bb1_queue);
+
+  ros::Time last_time = ros::Time::now();
+  ros::Timer control_loop = nh.createTimer(ros::Duration(0.01), 
+    boost::bind(controlLoop, last_time, boost::ref(cm), boost::ref(robot)));
+
+  ROS_INFO_STREAM_NAMED("hardware_interface","Starting spinner");
+  spinner.start();
+
+  ROS_INFO_STREAM_NAMED("hardware_interface","Waiting for shutdown");
+  ros::waitForShutdown();
+
+  // while (ros::ok())
+  // {
+  //    robot.read();
+  //    cm.update(ros::Time::now(), r.cycleTime());
+  //    robot.write(r.cycleTime());
+  //    r.sleep();
+  // }
   ROS_INFO_STREAM_NAMED("hardware_interface","Shutting down");
 
   return 0;
