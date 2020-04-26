@@ -1,14 +1,11 @@
 <?xml version="1.0"?>
 <launch>
    
-  <!-- Include the minimal launch -->
-  <include file="$(find bb1_bringup)/launch/minimal.launch"/>
+  <!-- Include the base launch -->
+  <include file="$(find bb1_base)/launch/base.launch"/>
 
   <!-- bb1_status -->
   <node pkg="bb1_status" type="status.py" name="bb1_status"/>
-
-  <!-- teleop -->
-  <!-- <include file="$(find bb1_teleop)/launch/joystick.launch"/> -->
   
   <!-- imu -->
   <include file="$(find bb1_bringup)/launch/imu.launch"/>
