@@ -4,8 +4,8 @@
   <!-- Include the base launch -->
   <include file="$(find bb1_base)/launch/base.launch"/>
 
-  <!-- bb1_status -->
-  <node pkg="bb1_status" type="status.py" name="bb1_status"/>
+  <!-- bb1_diagnostics -->
+  <node pkg="bb1_diagnostics" type="diagnostics.py" name="bb1_diagnostics"/>
   
   <!-- imu -->
   <include file="$(find bb1_bringup)/launch/imu.launch"/>
