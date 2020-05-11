@@ -6,6 +6,7 @@
     <param name="linear_acceleration_stddev" value="0.1" />
     <param name="angular_velocity_stddev" value="0.1" />
     <param name="orientation_stddev" value="0.1" />
+    <param name="time_offset_in_seconds" value="-0.061" />
   </node>
   <node pkg="tf" type="static_transform_publisher" name="imu_base_broadcaster" args="0 0 0.03 0 0 0 base_link imu_link 61" />
 </launch>
